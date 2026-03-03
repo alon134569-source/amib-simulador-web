@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simulador AMIB Figura 3 (Serie 210)</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <h1>Simulador AMIB Figura 3 (Serie 210)</h1>
+      <p class="muted">Corre 100% en tu navegador (Python vía Pyodide). Preguntas generadas (no oficiales).</p>
+    </header>
+
+    <section id="loader" class="card">
+      <h2>Cargando Python…</h2>
+      <p id="loaderStatus" class="muted">Descargando Pyodide y preparando el simulador.</p>
+      <div class="progress"><div id="bar" class="bar"></div></div>
+    </section>
+
+    <section id="setup" class="card hidden">
+      <h2>Configuración</h2>
+
+      <div class="row">
+        <label>Modo</label>
+        <select id="mode">
+          <option value="exam">Examen (210, distribución oficial)</option>
+          <option value="topic">Práctica por tema (30)</option>
+          <option value="quick">Rápida (10 por tema = 90)</option>
+        </select>
+      </div>
+
+      <div class="row" id="topicRow">
+        <label>Tema</label>
+        <select id="topic"></select>
+      </div>
+
+      <button id="startBtn" class="btn">Iniciar</button>
+    </section>
+
+    <section id="quiz" class="card hidden">
+      <div class="topline">
+        <div>
+          <div class="pill" id="areaPill">Área</div>
+          <div class="muted" id="progressText">1/10</div>
+        </div>
+        <button id="quitBtn" class="btn secondary">Terminar</button>
+      </div>
+
+      <h2 id="qText">Pregunta</h2>
+      <form id="choices" class="choices"></form>
+
+      <div class="actions">
+        <button id="skipBtn" class="btn secondary" type="button">Saltar</button>
+        <button id="nextBtn" class="btn" type="button">Siguiente</button>
+      </div>
+    </section>
+
+    <section id="results" class="card hidden">
+      <h2>Resultados</h2>
+      <div class="grid">
+        <div class="stat">
+          <div class="muted">Calificación</div>
+          <div class="big" id="scorePct">0%</div>
+        </div>
+        <div class="stat">
+          <div class="muted">Aciertos</div>
+          <div class="big" id="scoreRaw">0/0</div>
+        </div>
+        <div class="stat">
+          <div class="muted">Puntaje estimado</div>
+          <div class="big" id="scoreScale">200</div>
+          <div class="muted small">Escala aproximada 200–1100</div>
+        </div>
+      </div>
+
+      <h3>Desglose por área</h3>
+      <div id="byArea" class="byarea"></div>
+
+      <h3>Revisión de incorrectas/saltadas</h3>
+      <div id="wrongs" class="wrongs"></div>
+
+      <div class="actions">
+        <button id="restartBtn" class="btn" type="button">Volver a empezar</button>
+      </div>
+    </section>
+
+    <footer class="footer muted">
+      <p>Disclaimer: Esto es material de práctica con preguntas generadas/originales. No contiene reactivos oficiales.</p>
+    </footer>
+  </main>
+
+  <!-- Pyodide -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
