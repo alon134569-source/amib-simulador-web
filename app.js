@@ -90,8 +90,7 @@ async function start(mode, topic) {
   setHidden("results", true);
   setHidden("quiz", false);
 
-  const q = pyodide.runPython(`get_question(${currentIndex})`)
-  .toJs({ dict_converter: Object.fromEntries });
+  const q = JSON.parse(pyodide.runPython(`get_question_json(${currentIndex})`));
   renderQuestion(q);
 }
 
@@ -110,8 +109,7 @@ async function next(saveAsSkip=false) {
     return;
   }
 
-  const q = pyodide.runPython(`get_question(${currentIndex})`)
-  .toJs({ dict_converter: Object.fromEntries });
+  const q = JSON.parse(pyodide.runPython(`get_question_json(${currentIndex})`));
   renderQuestion(q);
 }
 
@@ -165,8 +163,7 @@ function renderResults(summary) {
 }
 
 async function finish() {
-  const summary = pyodide.runPython("finish()")
-  .toJs({ dict_converter: Object.fromEntries });
+  const summary = JSON.parse(pyodide.runPython("finish_json()"));
 
   setHidden("quiz", true);
   setHidden("results", false);
