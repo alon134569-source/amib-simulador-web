@@ -309,3 +309,10 @@ def finish():
         "wrongs": wrongs
     }
     return summary
+import json
+
+def get_question_json(i: int):
+    return json.dumps(get_question(i), ensure_ascii=False)
+
+def finish_json():
+    return json.dumps(finish(), ensure_ascii=False)
