@@ -40,7 +40,7 @@ OFFICIAL_EXAM_BLUEPRINT = [
     ("Análisis Económico/Financiero/Técnico", 25),
 ]
 
-def gen_etica(n=30):
+def _etica(n=30):
     principios = [
         ("Evitar conflicto de interés", "Revelar conflicto y priorizar al cliente"),
         ("Confidencialidad", "No divulgar información del cliente ni de emisoras de forma indebida"),
@@ -129,42 +129,258 @@ def gen_matematicas_portafolios(n=30):
         expl = "Interés compuesto: VF = VP(1+r)^t."
         out.append(shuffle_choices(Question("Matemáticas y Portafolios", text, choices, 0, expl)))
     return out
+def gen_mercado_capitales(n=120):
+    """
+    Banco amplio y variado (capitales). Basado en conceptos de tus slides:
+    mercado primario/secundario, MILA, CP, obligaciones, acciones, bursatilidad,
+    capitalización, ETF/trackers/warrants, etc. :contentReference[oaicite:2]{index=2}
+    """
+    pool = []
 
-def gen_mercado_capitales(n=30):
-    out=[]
-    temas = ["mercado primario","mercado secundario","IPO","dividendo","split","índice"]
-    for _ in range(n):
-        tema = random.choice(temas)
-        if tema=="mercado primario":
-            text="¿Qué ocurre principalmente en el mercado primario?"
-            choices=["Emisión/colocación inicial de valores; recursos van al emisor",
-                     "Compra-venta entre inversionistas; recursos van al vendedor",
-                     "Solo derivados","Solo repos"]
-            expl="Primario: emisión/colocación; el emisor recibe recursos."
-        elif tema=="mercado secundario":
-            text="¿Qué describe mejor al mercado secundario?"
-            choices=["Intercambio de valores ya emitidos entre inversionistas",
-                     "Emisión inicial por el emisor","Pago de impuestos","Registro contable interno"]
-            expl="Secundario: negociación de valores ya emitidos."
-        elif tema=="IPO":
-            text="Una IPO (oferta pública inicial) se asocia más con:"
-            choices=["Colocar acciones por primera vez al público","Pagar cupones","Convertir tasa fija a variable","Forward FX"]
-            expl="IPO: primera colocación pública de acciones."
-        elif tema=="dividendo":
-            text="Si una acción paga dividendo, en general implica:"
-            choices=["Distribución a accionistas (según política)","Obligación fija como cupón","Garantía de alza de precio","Que no hay utilidades"]
-            expl="Dividendo: distribución; no es obligación contractual fija como cupón."
-        elif tema=="split":
-            text="Un split normalmente busca:"
-            choices=["Ajustar # de acciones y precio unitario sin cambiar el valor económico total",
-                     "Aumentar utilidades","Cambiar cupón","Eliminar volatilidad"]
-            expl="Split: cambia piezas (acciones) y precio unitario, no el valor total por sí mismo."
-        else:
-            text="¿Para qué sirve principalmente un índice accionario?"
-            choices=["Medir desempeño agregado de un conjunto de acciones","Garantizar rendimiento","Eliminar riesgo","Sustituir estados financieros"]
-            expl="Índice: benchmark/medida de desempeño agregado."
-        out.append(shuffle_choices(Question("Mercado de Capitales I-II", text, choices, 0, expl)))
-    return out
+    def Q(text, choices, correct, expl):
+        pool.append(shuffle_choices(Question("Mercado de Capitales I-II", text, choices, correct, expl)))
+
+    # 1) Mercado capitales: definición
+    Q("¿Qué describe mejor al Mercado de Capitales?",
+      ["Mercado de largo plazo para financiar capital social/proyectos y negociar valores representativos de capital",
+       "Mercado exclusivo para CETES a 28 días",
+       "Mercado donde solo se operan derivados",
+       "Mercado de préstamos bancarios de consumo"],
+      0,
+      "Capitales se asocia a financiamiento y negociación de valores representativos de capital a plazos largos.")
+
+    # 2) Primario vs secundario
+    Q("En el mercado primario, típicamente:",
+      ["La emisora coloca valores por primera vez y recibe los recursos",
+       "Solo hay compraventa entre inversionistas y la emisora no participa",
+       "Se negocian valores ya emitidos por oferta y demanda",
+       "Siempre se fija el precio por el comprador"],
+      0,
+      "Primario: emisión/colocación inicial; recursos al emisor. :contentReference[oaicite:3]{index=3}")
+
+    Q("En el mercado secundario, lo más correcto es:",
+      ["Se negocian valores ya emitidos entre inversionistas; el precio lo determina oferta y demanda",
+       "La emisora recibe el dinero de cada operación",
+       "No existen intermediarios",
+       "El precio lo fija siempre la emisora"],
+      0,
+      "Secundario: negociación posterior entre contrapartes; precio por oferta/demanda. :contentReference[oaicite:4]{index=4}")
+
+    Q("Una OPI/IPO se refiere a:",
+      ["Oferta pública inicial: primera colocación al público",
+       "Pago de cupón de un bono",
+       "Operación de reporto",
+       "Cobertura con forward de divisas"],
+      0,
+      "IPO/OPI: primera colocación pública. :contentReference[oaicite:5]{index=5}")
+
+    Q("Follow-on se refiere a:",
+      ["Oferta subsecuente: colocación adicional de valores ya listados",
+       "Emisión privada sin mercado",
+       "Pago de dividendos",
+       "Split inverso"],
+      0,
+      "Follow-on: colocación adicional posterior a estar listada. :contentReference[oaicite:6]{index=6}")
+
+    # 3) MILA
+    Q("¿Qué es MILA principalmente?",
+      ["Plataforma que conecta bolsas (Chile, Colombia, México, Perú) para ruteo/ejecución/post-negociación",
+       "Una cámara de compensación de criptomonedas",
+       "Un mercado terciario de acciones (existe formalmente)",
+       "Una aseguradora regional"],
+      0,
+      "MILA integra bolsas regionales para operar valores vía intermediario local. :contentReference[oaicite:7]{index=7}")
+
+    Q("En MILA, las operaciones típicamente se realizan:",
+      ["En moneda local y con anotación en cuenta a través del intermediario local",
+       "Solo en USD y fuera de cada país",
+       "Sin intermediarios",
+       "Solo en mercado primario"],
+      0,
+      "En MILA se facilita operar en moneda local con intermediario local. :contentReference[oaicite:8]{index=8}")
+
+    # 4) Emisor de capitales vs deuda / inversionista
+    Q("Comparando capitales vs deuda para el emisor, una diferencia clave es:",
+      ["Capitales modifica composición del capital social; deuda incrementa pasivos",
+       "Capitales siempre tiene vencimiento; deuda nunca vence",
+       "Capitales paga cupones fijos; deuda paga dividendos",
+       "En deuda entran socios; en capitales no"],
+      0,
+      "Capitales implica socios; deuda implica acreedores/pasivo. :contentReference[oaicite:9]{index=9}")
+
+    Q("Un inversionista en capitales (accionista) es principalmente:",
+      ["Socio dueño proporcional con menor prelación que un acreedor",
+       "Acreedor con mayor prelación que todos",
+       "Asegurador del emisor",
+       "Proveedor del emisor"],
+      0,
+      "Accionista: socio; más riesgo y menor prelación vs acreedor. :contentReference[oaicite:10]{index=10}")
+
+    # 5) Certificados de Participación (CP)
+    Q("Los Certificados de Participación son típicamente:",
+      ["Títulos emitidos por fiduciarias que representan participación sobre bienes/valores en fideicomiso",
+       "Depósitos bancarios a la vista",
+       "Acciones preferentes del gobierno",
+       "Pagarés bancarios no bursátiles"],
+      0,
+      "CP: participación en fideicomisos y derechos sobre productos de esos bienes/valores. :contentReference[oaicite:11]{index=11}")
+
+    Q("Respecto a CP amortizables vs no amortizables, lo más correcto es:",
+      ["Pueden existir con amortización (devolución programada) o sin amortización hasta el final",
+       "No existe esa clasificación",
+       "Siempre pagan dividendo fijo",
+       "Son derivados, no títulos de crédito"],
+      0,
+      "Tus slides distinguen CP amortizables vs no amortizables. :contentReference[oaicite:12]{index=12}")
+
+    # 6) Obligaciones
+    Q("Una 'obligación' (bono corporativo tipo obligación) se caracteriza por:",
+      ["Ser título de crédito; financia largo plazo; puede pagar tasa fija o variable",
+       "Ser acción ordinaria con voto",
+       "No tener plazo",
+       "Ser siempre sin intereses"],
+      0,
+      "Obligaciones: crédito colectivo, largo plazo, tasa fija/variable. :contentReference[oaicite:13]{index=13}")
+
+    Q("Por tipo de garantía, una obligación puede ser:",
+      ["Quirografaria, prendaria, fiduciaria o hipotecaria",
+       "Solo quirografaria",
+       "Solo hipotecaria",
+       "Solo con garantía del gobierno"],
+      0,
+      "Clasificación por garantía aparece en tus slides. :contentReference[oaicite:14]{index=14}")
+
+    # 7) Acciones: valores nominal/libros/mercado
+    Q("El valor en libros (contable) por acción se aproxima a:",
+      ["Capital contable / número de acciones",
+       "Precio de mercado / utilidad por acción",
+       "Dividendo / precio",
+       "Precio de cierre / volumen"],
+      0,
+      "Valor en libros: contable por acción (capital contable entre acciones). :contentReference[oaicite:15]{index=15}")
+
+    Q("El valor de mercado (precio) de una acción es:",
+      ["El determinado por oferta y demanda y puede variar constantemente",
+       "El que viene impreso en el acta constitutiva",
+       "Siempre igual al valor en libros",
+       "Un valor fijo por regulación"],
+      0,
+      "Precio de mercado varía por oferta/demanda. :contentReference[oaicite:16]{index=16}")
+
+    Q("Una acción preferente suele:",
+      ["Tener preferencia en dividendos (p.ej. dividendo fijo antes que la común) y usualmente sin voto",
+       "Tener siempre voto y sin preferencia en dividendos",
+       "Ser un pagaré bancario",
+       "Ser un derivado"],
+      0,
+      "Preferentes: prioridad en dividendos y normalmente sin derecho a voto. :contentReference[oaicite:17]{index=17}")
+
+    # 8) Bursatilidad
+    Q("La bursatilidad de una acción se refiere principalmente a:",
+      ["Facilidad/frecuencia con que se puede comprar o vender (liquidez en mercado)",
+       "Su tasa de interés fija",
+       "Su fecha de vencimiento",
+       "Su calificación crediticia"],
+      0,
+      "Bursatilidad: frecuencia de transacción y facilidad de liquidar posición. :contentReference[oaicite:18]{index=18}")
+
+    Q("Una bolsa puede medir bursatilidad usando variables como:",
+      ["Importe operado, número de operaciones e importe representativo (mediana)",
+       "Solo dividendos pagados",
+       "Solo número de empleados de la emisora",
+       "Solo el sector económico"],
+      0,
+      "Tus slides listan variables típicas para bursatilidad. :contentReference[oaicite:19]{index=19}")
+
+    # 9) Capitalización / Blue chip
+    Q("El valor de capitalización (market cap) se calcula como:",
+      ["Acciones en circulación × precio de la acción",
+       "Utilidad neta / ventas",
+       "Deuda total × tasa",
+       "Precio / utilidad por acción"],
+      0,
+      "Capitalización: tamaño en términos de valor de mercado. :contentReference[oaicite:20]{index=20}")
+
+    Q("‘Blue chip’ suele referirse a:",
+      ["Compañías grandes y estables, líderes, con alta capitalización",
+       "Startups sin ingresos",
+       "Empresas no listadas",
+       "Instrumentos sin riesgo"],
+      0,
+      "Blue chip: grandes, reputación de estabilidad y liderazgo. :contentReference[oaicite:21]{index=21}")
+
+    # 10) ETFs / Trackers
+    Q("Un ETF normalmente busca:",
+      ["Replicar un índice o subyacente y negociarse intradía como acción",
+       "Garantizar rendimiento mínimo",
+       "Evitar todo riesgo de mercado",
+       "Solo invertir en efectivo"],
+      0,
+      "ETF: replica subyacente/índice y se negocia en bolsa en tiempo real. :contentReference[oaicite:22]{index=22}")
+
+    Q("¿Qué afirmación es más correcta sobre ETF vs fondo tradicional?",
+      ["ETF se negocia intradía a precio de mercado; fondo abierto suele operar a valuación (NAV) en cortes",
+       "Ambos siempre se operan a NAV intradía",
+       "ETF no puede diversificar",
+       "Fondo tradicional siempre tiene mercado secundario"],
+      0,
+      "Tus slides contrastan negociación intradía vs valuación por cortes. :contentReference[oaicite:23]{index=23}")
+
+    Q("Un ‘tracker’ (CBFI indizado) sirve principalmente para:",
+      ["Replicar un índice/portafolio y permitir comprar/vender el índice como si fuera una sola acción",
+       "Pagar un cupón fijo como un bono",
+       "Dar derecho a voto en una emisora",
+       "Ser un depósito bancario"],
+      0,
+      "Tracker: replica subyacente y facilita acceso a índices con un solo instrumento. :contentReference[oaicite:24]{index=24}")
+
+    Q("NAFTRAC se menciona como ejemplo de:",
+      ["Tracker que replica el S&P/BMV IPC",
+       "Acción preferente",
+       "Bono gubernamental",
+       "Warrant de divisas"],
+      0,
+      "NAFTRAC replica S&P/BMV IPC según tus slides. :contentReference[oaicite:25]{index=25}")
+
+    # 11) Warrants vs opciones
+    Q("Una diferencia clave entre warrants y opciones (en general) es:",
+      ["Warrants son títulos emitidos por intermediarios/empresas; opciones son contratos derivados listados",
+       "Warrants siempre son contratos OTC; opciones siempre son títulos de crédito",
+       "No hay diferencias",
+       "Las opciones solo pueden ser sobre acciones mexicanas"],
+      0,
+      "Tus slides listan diferencias: naturaleza y emisor/listado. :contentReference[oaicite:26]{index=26}")
+
+    Q("Ejercicio ‘americano’ en un título opcional (warrant) significa:",
+      ["Puede ejercerse en cualquier momento antes del vencimiento",
+       "Solo puede ejercerse al vencimiento",
+       "Nunca puede ejercerse",
+       "Se ejerce automáticamente al comprar"],
+      0,
+      "Americano: ejercicio en cualquier momento previo al vencimiento. :contentReference[oaicite:27]{index=27}")
+
+    Q("Ejercicio ‘europeo’ significa:",
+      ["Solo puede ejercerse en la fecha de vencimiento",
+       "Puede ejercerse cualquier día",
+       "Se ejerce cuando el emisor quiere",
+       "No existe ese tipo de ejercicio"],
+      0,
+      "Europeo: solo al vencimiento. :contentReference[oaicite:28]{index=28}")
+
+    # 12) Variantes numéricas (capitalización / rendimiento simple)
+    for _ in range(40):
+        shares = random.randint(10_000_000, 200_000_000)
+        price = random.choice([8.5, 12.3, 25.0, 41.7, 63.2])
+        mc = shares * price
+        Q(f"Una empresa tiene {shares:,} acciones en circulación y su precio es ${price:.2f}. ¿Capitalización aproximada?",
+          [f"${mc:,.0f}", f"${(mc/10):,.0f}", f"${(mc*1.1):,.0f}", f"${(mc*0.9):,.0f}"],
+          0,
+          "Market cap = acciones en circulación × precio. :contentReference[oaicite:29]{index=29}")
+
+    # Limita a n, sin repetir dentro del pool (pool ya son distintos)
+    random.shuffle(pool)
+    return pool[:n]
+
 
 def gen_titulos_deuda(n=30):
     out=[]
@@ -178,16 +394,181 @@ def gen_titulos_deuda(n=30):
         expl="Cupón cero: Precio = FV/(1+y)^t."
         out.append(shuffle_choices(Question("Títulos de Deuda I-II", text, choices, 0, expl)))
     return out
+def gen_fondos(n=120):
+    """
+    Banco amplio y variado (fondos). Basado en tus slides:
+    concepto/objeto, AOI, portafolio, comparativos, operaciones autorizadas/prohibidas,
+    estados de cuenta, series A/B, régimen de inversión, FIID vs RV, indizadas beta, etc. :contentReference[oaicite:30]{index=30}
+    """
+    pool = []
 
-def gen_fondos(n=30):
-    out=[]
-    for _ in range(n):
-        text="Diferencia general más común entre ETF y fondo tradicional:"
-        choices=["ETF suele negociarse en bolsa intradía; fondo tradicional a NAV en cortes",
-                 "ETF no tiene riesgo","Fondo siempre gana","ETF nunca cobra comisiones"]
-        expl="Generalmente: ETF intradía en bolsa; fondos abiertos operan a NAV según horarios."
-        out.append(shuffle_choices(Question("Fondos de Inversión", text, choices, 0, expl)))
-    return out
+    def Q(text, choices, correct, expl):
+        pool.append(shuffle_choices(Question("Fondos de Inversión", text, choices, correct, expl)))
+
+    # Concepto y objeto
+    Q("Un fondo de inversión se define mejor como:",
+      ["Sociedad autorizada que capta recursos del público para invertir colectivamente en un portafolio de valores",
+       "Un pagaré bancario a plazo fijo",
+       "Una cuenta de cheques sin inversiones",
+       "Una emisora de acciones ordinarias"],
+      0,
+      "Fondo: inversión colectiva administrada profesionalmente. :contentReference[oaicite:31]{index=31}")
+
+    Q("El objeto del fondo de inversión incluye principalmente:",
+      ["Adquirir/vender activos objeto de inversión con recursos de la colocación de sus acciones",
+       "Emitir billetes y monedas",
+       "Otorgar créditos al consumo",
+       "Operar exclusivamente criptomonedas"],
+      0,
+      "Objeto: operar AOI con recursos del público inversionista. :contentReference[oaicite:32]{index=32}")
+
+    # AOI
+    Q("Activos Objeto de Inversión (AOI) puede incluir:",
+      ["Valores en RNV/SIC, efectivo, derechos/créditos y derivados permitidos por regulación",
+       "Solo bienes raíces físicos",
+       "Solo acciones de una emisora",
+       "Solo CETES a 28 días"],
+      0,
+      "AOI incluye una gama amplia conforme a LFI/CNBV, según tus slides. :contentReference[oaicite:33]{index=33}")
+
+    # Portafolio
+    Q("El portafolio (cartera) de un fondo es:",
+      ["Conjunto de instrumentos (deuda, renta variable, derivados, efectivo) propiedad del fondo",
+       "El estado de resultados del banco",
+       "Una promesa de rendimiento fijo",
+       "Un contrato laboral del gestor"],
+      0,
+      "Portafolio: activos del fondo alineados a objetivo, riesgo y diversificación. :contentReference[oaicite:34]{index=34}")
+
+    # Comparativo con CETES / pagaré / ETF / SIEFORE
+    Q("Respecto a fondos vs CETES/pagarés, una diferencia común es:",
+      ["Fondos dan participación colectiva y rendimiento variable; pagaré/CETES pueden tener rendimiento pactado",
+       "Fondos siempre garantizan rendimiento",
+       "CETES no tienen emisor",
+       "Pagaré se negocia en bolsa intradía"],
+      0,
+      "Tus slides comparan rendimiento y relación inversionista-emisor. :contentReference[oaicite:35]{index=35}")
+
+    Q("Una diferencia típica fondo vs ETF es:",
+      ["ETF se compra/vende en mercado secundario; fondo abierto tiene recompra por la sociedad y opera a valuación",
+       "ETF siempre tiene recompra obligatoria diaria por el emisor",
+       "Fondo siempre se negocia intradía en bolsa",
+       "ETF está fuera de regulación"],
+      0,
+      "ETF: mercado secundario; fondo abierto: recompra/valuación. :contentReference[oaicite:36]{index=36}")
+
+    Q("Una SIEFORE se asocia principalmente con:",
+      ["Ahorro para el retiro (AFORE/CONSAR) y subcuentas de retiro",
+       "ETF de materias primas",
+       "Warrant sobre acciones",
+       "Cuenta de cheques"],
+      0,
+      "SIEFORE: retiro, regulada por CONSAR (según comparativo de tus slides). :contentReference[oaicite:37]{index=37}")
+
+    # Fondo de fondos
+    Q("Un fondo de fondos es:",
+      ["Fondo que invierte en acciones de otros fondos, buscando diversificación multi-gestión",
+       "Fondo que solo invierte en CETES",
+       "ETF apalancado 3x",
+       "Cuenta bancaria con seguro IPAB"],
+      0,
+      "Fondo de fondos: invierte en fondos para diversificar estilos. :contentReference[oaicite:38]{index=38}")
+
+    # Operaciones autorizadas vs prohibidas
+    Q("¿Cuál operación está típicamente AUTORIZADA para un fondo, según tus slides?",
+      ["Celebrar reportos (solo como reportadora) y préstamos de valores con bancos/casas de bolsa",
+       "Recibir depósitos de dinero como un banco",
+       "Otorgar aval/garantía a terceros",
+       "Practicar crédito activo (excepto reporto/préstamo de valores)"],
+      0,
+      "Autorizadas incluyen reporto/préstamo valores; prohibidas incluyen depósitos/avales. :contentReference[oaicite:39]{index=39}")
+
+    Q("¿Cuál conducta aparece como PROHIBIDA en el resumen de tus slides?",
+      ["Recibir depósitos de dinero",
+       "Mantener acciones propias en tesorería",
+       "Comprar/vender AOI conforme régimen",
+       "Comprar acciones de otro fondo del mismo tipo (con límites)"],
+      0,
+      "Prohibición explícita: recibir depósitos. :contentReference[oaicite:40]{index=40}")
+
+    # Estados de cuenta
+    Q("Un estado de cuenta de acciones de fondos debe incluir, entre otros:",
+      ["Posición valuada al corte, movimientos del periodo y avisos de modificaciones a prospectos",
+       "Garantía de rendimientos futuros",
+       "Solo el nombre del cliente",
+       "Solo noticias del mercado"],
+      0,
+      "Tus slides listan contenido típico del estado de cuenta. :contentReference[oaicite:41]{index=41}")
+
+    # Series accionarias / capital fijo
+    Q("Según tus slides, el capital mínimo (fijo) de un fondo se asocia con una serie:",
+      ["Serie A (capital fijo sin derecho a retiro) y la parte variable suele ser Serie B",
+       "Serie Z (capital variable)",
+       "Serie C (solo institucional)",
+       "No existen series en fondos"],
+      0,
+      "Series: A capital fijo; B capital variable (general). :contentReference[oaicite:42]{index=42}")
+
+    # Regímenes de inversión
+    Q("Según la clasificación por régimen de inversión, los fondos pueden ser:",
+      ["Renta variable, instrumentos de deuda, capitales y cobertura",
+       "Solo renta variable",
+       "Solo deuda gubernamental",
+       "Solo derivados"],
+      0,
+      "Régimen: RV, deuda, capitales, cobertura. :contentReference[oaicite:43]{index=43}")
+
+    # FIID vs FIRV
+    Q("Un fondo en instrumentos de deuda (FIID) típicamente:",
+      ["No invierte en renta variable, es menos volátil y sensible a movimientos de tasas",
+       "Invierte mínimo 80% en acciones",
+       "Garantiza rendimiento fijo",
+       "No está influido por tasas de interés"],
+      0,
+      "FIID: deuda, sin RV; tasas afectan rendimiento. :contentReference[oaicite:44]{index=44}")
+
+    Q("Comparado con FIID, un fondo de renta variable suele:",
+      ["Ser más volátil y afectado por movimientos del mercado accionario",
+       "Tener cupón fijo calendarizado",
+       "Tener vencimiento como CETE",
+       "No tener fluctuaciones de precio"],
+      0,
+      "RV: más volatilidad por mercado accionario. :contentReference[oaicite:45]{index=45}")
+
+    # Indizadas (beta)
+    Q("En fondos indizados, tus slides mencionan como característica:",
+      ["Mantener beta entre la variable y el precio de su acción aproximadamente entre 0.95 y 1.05",
+       "Mantener beta exactamente 0",
+       "No seguir ningún índice",
+       "Ser siempre apalancados 3x"],
+      0,
+      "Fondos indizados buscan replicación cercana (beta ~1). :contentReference[oaicite:46]{index=46}")
+
+    # Categorías por duración (deuda)
+    Q("En fondos de deuda, una clasificación frecuente por duración es:",
+      ["Corto (≤1 año), mediano (>1 y ≤3), largo (>3)",
+       "Corto (≤10 años), mediano (≤20), largo (≤30)",
+       "Solo corto plazo",
+       "No existe clasificación por duración"],
+      0,
+      "Tus slides muestran la categorización por duración. :contentReference[oaicite:47]{index=47}")
+
+    # Variantes numéricas NAV
+    for _ in range(50):
+        activos = random.randint(20_000_000, 250_000_000)
+        pasivos = random.randint(0, 15_000_000)
+        acciones = random.randint(2_000_000, 15_000_000)
+        nav = (activos - pasivos) / acciones
+        Q(f"Un fondo tiene activos ${activos:,.0f}, pasivos ${pasivos:,.0f} y {acciones:,} acciones. ¿NAV por acción aprox.?",
+          [f"${nav:,.4f}",
+           f"${(activos/acciones):,.4f}",
+           f"${((activos+pasivos)/acciones):,.4f}",
+           f"${((activos-pasivos)/(acciones*10)) :,.4f}"],
+          0,
+          "NAV = (Activos - Pasivos) / Acciones (definición estándar).")
+
+    random.shuffle(pool)
+    return pool[:n]
 
 def gen_derivados(n=30):
     out=[]
@@ -210,7 +591,7 @@ def gen_analisis(n=30):
         out.append(shuffle_choices(Question("Análisis Económico/Financiero/Técnico", text, choices, 0, expl)))
     return out
 
-def build_bank(min_per_area=30) -> Dict[str, List[Question]]:
+def build_bank(min_per_area=120) -> Dict[str, List[Question]]:
     return {
         "Ética": gen_etica(min_per_area),
         "Servicios de Inversión": gen_servicios_inversion(min_per_area),
