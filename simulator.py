@@ -609,15 +609,63 @@ BANK = None
 QUESTIONS: List[Question] = []
 ANSWERS: List[int] = []  # -1 = skip, 0..3 option index
 
-def init_bank():
-    global BANK
-    BANK = build_bank(30)
-    return sorted(list(BANK.keys()))
+AREA_SIZES = {
+    "Ética": 60,
+    "Servicios de Inversión": 60,
+    "Marco Normativo I-III": 60,
+    "Matemáticas y Portafolios": 80,
+    "Mercado de Capitales I-II": 150,   # grande
+    "Títulos de Deuda I-II": 80,
+    "Fondos de Inversión": 150,         # grande
+    "Derivados y Riesgos": 80,
+    "Análisis Económico/Financiero/Técnico": 60,
+}
 
-def start_quiz(mode: str, topic: str = ""):
-    global QUESTIONS, ANSWERS, BANK
-    if BANK is None:
-        init_bank()
+# --- NUEVO: no construir todo al inicio
+BANK = {}  # area -> list[Question]
+AREAS = [
+    "Ética",
+    "Servicios de Inversión",
+    "Marco Normativo I-III",
+    "Matemáticas y Portafolios",
+    "Mercado de Capitales I-II",
+    "Títulos de Deuda I-II",
+    "Fondos de Inversión",
+    "Derivados y Riesgos",
+    "Análisis Económico/Financiero/Técnico",
+]
+
+def init_bank():
+    # Solo regresa lista de áreas (instantáneo)
+    return AREAS
+
+def ensure_area(area: str):
+    """Construye banco solo si hace falta (lazy)."""
+    if area in BANK and len(BANK[area]) >= AREA_SIZES.get(area, 60):
+        return
+
+    size = AREA_SIZES.get(area, 60)
+
+    if area == "Ética":
+        BANK[area] = gen_etica(size)
+    elif area == "Servicios de Inversión":
+        BANK[area] = gen_servicios_inversion(size)
+    elif area == "Marco Normativo I-III":
+        BANK[area] = gen_marco_normativo(size)
+    elif area == "Matemáticas y Portafolios":
+        BANK[area] = gen_matematicas_portafolios(size)
+    elif area == "Mercado de Capitales I-II":
+        BANK[area] = gen_mercado_capitales(size)
+    elif area == "Títulos de Deuda I-II":
+        BANK[area] = gen_titulos_deuda(size)
+    elif area == "Fondos de Inversión":
+        BANK[area] = gen_fondos(size)
+    elif area == "Derivados y Riesgos":
+        BANK[area] = gen_derivados(size)
+    elif area == "Análisis Económico/Financiero/Técnico":
+        BANK[area] = gen_analisis(size)
+    else:
+        raise ValueError("Área desconocida: " + area)
 
     q=[]
     if mode == "exam":
