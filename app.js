@@ -82,16 +82,37 @@ function getSelectedChoice() {
 }
 
 async function start(mode, topic) {
-  currentIndex = 0;
-  const cmd = `start_quiz(${JSON.stringify(mode)}, ${JSON.stringify(topic || "")})`;
-  totalQuestions = pyodide.runPython(cmd);
+  try {
+    if (!pyodide) {
+      alert("Pyodide todavía no está listo.");
+      return;
+    }
 
-  setHidden("setup", true);
-  setHidden("results", true);
-  setHidden("quiz", false);
+    currentIndex = 0;
 
-  const q = JSON.parse(pyodide.runPython(`get_question_json(${currentIndex})`));
-  renderQuestion(q);
+    // UI feedback
+    el("startBtn").disabled = true;
+    el("startBtn").textContent = "Generando preguntas…";
+
+    // IMPORTANTE: usar runPythonAsync para que el navegador no se “congele”
+    const cmd = `start_quiz(${JSON.stringify(mode)}, ${JSON.stringify(topic || "")})`;
+    totalQuestions = await pyodide.runPythonAsync(cmd);
+
+    setHidden("setup", true);
+    setHidden("results", true);
+    setHidden("quiz", false);
+
+    const q = (await pyodide.runPythonAsync(`get_question(${currentIndex})`))
+      .toJs({ dict_converter: Object.fromEntries });
+
+    renderQuestion(q);
+  } catch (err) {
+    console.error(err);
+    alert("Error al iniciar. Abre F12 > Console para ver detalles.\n\n" + err);
+  } finally {
+    el("startBtn").disabled = false;
+    el("startBtn").textContent = "Iniciar";
+  }
 }
 
 async function next(saveAsSkip=false) {
