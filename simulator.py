@@ -745,3 +745,31 @@ def get_question_json(i: int):
 
 def finish_json():
     return json.dumps(finish(), ensure_ascii=False)
+def start_quiz(mode: str, topic: str = ""):
+    global QUESTIONS, ANSWERS
+
+    q=[]
+
+    if mode == "exam":
+        for area, k in OFFICIAL_EXAM_BLUEPRINT:
+            ensure_area(area)
+            q += random.sample(BANK[area], k)
+        random.shuffle(q)
+
+    elif mode == "topic":
+        ensure_area(topic)
+        q = random.sample(BANK[topic], 30)
+        random.shuffle(q)
+
+    elif mode == "quick":
+        for area in AREAS:
+            ensure_area(area)
+            q += random.sample(BANK[area], 10)
+        random.shuffle(q)
+
+    else:
+        raise ValueError("Modo inválido")
+
+    QUESTIONS = q
+    ANSWERS = [-2 for _ in QUESTIONS]
+    return len(QUESTIONS)
