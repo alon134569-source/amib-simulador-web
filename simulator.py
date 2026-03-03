@@ -40,93 +40,86 @@ OFFICIAL_EXAM_BLUEPRINT = [
     ("Análisis Económico/Financiero/Técnico", 25),
 ]
 
-def _etica(n=30):
-    principios = [
-        ("Evitar conflicto de interés", "Revelar conflicto y priorizar al cliente"),
-        ("Confidencialidad", "No divulgar información del cliente ni de emisoras de forma indebida"),
-        ("Integridad", "No falsear información ni prometer rendimientos"),
-        ("Diligencia", "Sustentar recomendaciones con información razonable"),
-        ("Equidad", "Trato justo, sin preferir clientes por comisiones"),
-    ]
-    acciones_incorrectas = [
-        "prometer un rendimiento garantizado",
-        "ocultar una comisión o incentivo",
-        "compartir datos del cliente con un tercero sin autorización",
-        "recomendar algo sin conocer objetivo/horizonte del cliente",
-        "operar primero para beneficio propio (front-running)",
-    ]
+def gen_etica(n=60):
     out=[]
+    principios = [
+        ("Confidencialidad", "No divulgar información del cliente sin autorización"),
+        ("Conflicto de interés", "Revelar el conflicto y priorizar el interés del cliente"),
+        ("Integridad", "No prometer rendimientos ni ocultar costos"),
+        ("Diligencia", "Sustentar recomendaciones con información razonable"),
+        ("Trato justo", "No discriminar clientes por comisiones"),
+    ]
+    malas = [
+        "prometer rendimiento garantizado",
+        "ocultar incentivos",
+        "usar info no pública",
+        "recomendar sin conocer perfil",
+        "hacer front-running",
+    ]
     for _ in range(n):
-        p, buena = random.choice(principios)
-        mala = random.choice(acciones_incorrectas)
-        text = (f"En una asesoría, ¿qué conducta es MÁS consistente con el principio de '{p}'?\n"
-                f"Escenario: detectas la tentación de {mala}.")
-        choices = [buena,
-                   "Realizar la acción si el cliente no se da cuenta",
-                   "Hacerlo solo si el mercado está 'seguro'",
-                   "Hacerlo si aumenta la comisión del asesor"]
-        expl = f"Ética aplicada: '{p}' implica {buena.lower()} y evitar conductas como {mala}."
+        p, ok = random.choice(principios)
+        bad = random.choice(malas)
+        text = f"¿Qué conducta es MÁS consistente con '{p}' si existe riesgo de {bad}?"
+        choices = [ok, "Hacerlo si aumenta la comisión", "Hacerlo si nadie se entera", "Hacerlo si el mercado ‘ayuda’"]
+        expl = f"{p}: {ok.lower()} y evitar {bad}."
         out.append(shuffle_choices(Question("Ética", text, choices, 0, expl)))
     return out
 
-def gen_servicios_inversion(n=30):
+def gen_servicios_inversion(n=60):
     out=[]
+    tipos = ["Asesoría de inversiones", "Ejecución de operaciones", "Promoción/Comercialización"]
     for _ in range(n):
-        tipo = random.choice(["Asesoría de inversiones", "Comercialización/Promoción", "Ejecución de operaciones"])
-        text = f"¿Cuál enunciado describe MEJOR el servicio de '{tipo}'?"
-        if tipo == "Asesoría de inversiones":
-            choices = [
-                "Incluir recomendaciones razonables basadas en el perfil del cliente y del producto",
-                "Solo ejecutar órdenes sin emitir sugerencias",
-                "Solo informar precios sin analizar adecuación",
-                "Garantizar rendimiento mínimo al cliente",
-            ]
-            expl = "La asesoría supone recomendaciones/consejos y un estándar de razonabilidad ligado a perfiles."
-        elif tipo == "Ejecución de operaciones":
-            choices = [
-                "Ejecutar instrucciones del cliente sin necesariamente recomendar",
-                "Formular recomendaciones personalizadas obligatoriamente",
-                "Sustituir al cliente en todas las decisiones sin contrato",
-                "Cobrar solo si hay ganancia del cliente",
-            ]
-            expl = "Ejecución se enfoca en ejecutar instrucciones; no implica por sí misma recomendación."
+        t = random.choice(tipos)
+        if t=="Asesoría de inversiones":
+            text="La asesoría de inversiones implica principalmente:"
+            choices=["Recomendaciones razonables alineadas al perfil del cliente y del producto",
+                     "Solo ejecutar órdenes sin sugerir",
+                     "Garantizar rendimientos",
+                     "Evitar documentar comunicaciones"]
+            expl="Asesoría = recomendaciones + estándar de razonabilidad por perfiles."
+        elif t=="Ejecución de operaciones":
+            text="La ejecución de operaciones implica principalmente:"
+            choices=["Ejecutar instrucciones del cliente (sin que implique por sí misma recomendación)",
+                     "Formular recomendaciones personalizadas obligatoriamente",
+                     "Garantizar precio",
+                     "Eliminar riesgos del cliente"]
+            expl="Ejecución = ejecutar instrucciones; no implica asesoría per se."
         else:
-            choices = [
-                "Ofrecer información/recomendaciones sobre productos, cuidando adecuación según reglas aplicables",
-                "Operar con información privilegiada para mejorar precios",
-                "Evitar cualquier registro de comunicaciones",
-                "No mostrar comisiones ni costos",
-            ]
-            expl = "Promoción/comercialización implica ofrecer productos con transparencia y reglas de adecuación."
+            text="En promoción/comercialización, es clave:"
+            choices=["Transparencia de costos/riesgos y cuidar adecuación conforme reglas aplicables",
+                     "Ocultar comisiones",
+                     "Operar con info privilegiada",
+                     "No llevar registros"]
+            expl="Promoción = informar con transparencia y cumplir reglas de adecuación/registro."
         out.append(shuffle_choices(Question("Servicios de Inversión", text, choices, 0, expl)))
     return out
 
-def gen_marco_normativo(n=30):
+
+def gen_marco_normativo(n=60):
     out=[]
     conceptos = [
-        ("Información privilegiada", "Información no pública que podría influir en el precio de un valor"),
+        ("Información privilegiada", "Información no pública que puede influir en precio"),
         ("Información relevante", "Evento/dato que puede impactar decisiones de inversión"),
-        ("Conflicto de interés", "Situación donde el interés del asesor puede contraponerse al del cliente"),
-        ("Sanas prácticas", "Conductas profesionales alineadas con integridad, transparencia y trato justo"),
+        ("Conflicto de interés", "Interés del asesor puede contraponerse al del cliente"),
     ]
     for _ in range(n):
-        c, defin = random.choice(conceptos)
-        text = f"¿Cuál opción define MEJOR: '{c}'?"
-        choices = [defin, "Un rumor sin sustento", "Una opinión personal", "Cualquier dato público ya difundido"]
-        expl = f"Definición base: {c} se refiere a: {defin.lower()}."
+        c, d = random.choice(conceptos)
+        text=f"¿Cuál define mejor '{c}'?"
+        choices=[d, "Rumor sin sustento", "Opinión personal", "Dato público ya difundido"]
+        expl=f"{c}: {d.lower()}."
         out.append(shuffle_choices(Question("Marco Normativo I-III", text, choices, 0, expl)))
     return out
 
-def gen_matematicas_portafolios(n=30):
+def gen_matematicas_portafolios(n=80):
     out=[]
     for _ in range(n):
-        pv = random.randint(5_000, 50_000)
-        r = random.choice([0.06, 0.08, 0.10, 0.12])
-        t = random.choice([1,2,3,4])
+        pv = random.randint(5000, 50000)
+        r  = random.choice([0.06,0.08,0.10,0.12])
+        t  = random.choice([1,2,3,4])
         vf = pv*((1+r)**t)
-        text = f"Si inviertes ${pv:,.0f} a tasa anual {r*100:.0f}% compuesta por {t} años, ¿VF aproximado?"
-        choices = [f"${vf:,.0f}", f"${(pv*(1+r*t)):,.0f}", f"${(vf*0.95):,.0f}", f"${(vf*1.05):,.0f}"]
-        expl = "Interés compuesto: VF = VP(1+r)^t."
+        text=f"Invierte ${pv:,.0f} a {r*100:.0f}% compuesto por {t} años. ¿VF aprox.?"
+        choices=[f"${vf:,.0f}", f"${(pv*(1+r*t)):,.0f}", f"${(vf*0.9):,.0f}", f"${(vf*1.1):,.0f}"]
+        expl="VF = VP(1+r)^t."
         out.append(shuffle_choices(Question("Matemáticas y Portafolios", text, choices, 0, expl)))
     return out
 def gen_mercado_capitales(n=120):
@@ -382,16 +375,16 @@ def gen_mercado_capitales(n=120):
     return pool[:n]
 
 
-def gen_titulos_deuda(n=30):
+def gen_titulos_deuda(n=80):
     out=[]
     for _ in range(n):
-        fv = random.choice([10_000,20_000,50_000])
+        fv = random.choice([10000,20000,50000])
         y  = random.choice([0.07,0.09,0.11])
         t  = random.choice([1,2,3,4,5])
         pv = fv/((1+y)**t)
-        text=f"Un cupón cero paga ${fv:,.0f} en {t} años. Con y={y*100:.0f}%, ¿precio hoy aprox.?"
-        choices=[f"${pv:,.0f}", f"${(fv/(1+y*t)):,.0f}", f"${(pv*0.95):,.0f}", f"${(pv*1.05):,.0f}"]
-        expl="Cupón cero: Precio = FV/(1+y)^t."
+        text=f"Cupón cero paga ${fv:,.0f} en {t} años, y={y*100:.0f}%. ¿Precio aprox. hoy?"
+        choices=[f"${pv:,.0f}", f"${(fv/(1+y*t)):,.0f}", f"${(pv*0.9):,.0f}", f"${(pv*1.1):,.0f}"]
+        expl="Precio = FV/(1+y)^t."
         out.append(shuffle_choices(Question("Títulos de Deuda I-II", text, choices, 0, expl)))
     return out
 def gen_fondos(n=120):
@@ -570,23 +563,29 @@ def gen_fondos(n=120):
     random.shuffle(pool)
     return pool[:n]
 
-def gen_derivados(n=30):
+def gen_derivados(n=80):
     out=[]
     for _ in range(n):
-        fwd = random.randint(17,25)
-        spot = random.randint(17,25)
-        pnl = spot - fwd
-        text=f"Forward (posición larga): pactas {fwd}. Spot al vencimiento {spot}. ¿Payoff S-K?"
-        choices=[str(pnl), str(-pnl), str(spot+fwd), str(spot*fwd)]
-        expl="Payoff largo forward: S_T - K."
+        k = random.randint(80,120)
+        s = random.randint(80,120)
+        tipo = random.choice(["CALL","PUT"])
+        if tipo=="CALL":
+            text=f"CALL strike {k}, subyacente {s}. ¿Está ITM?"
+            ok = "Sí" if s>k else "No"
+            expl="CALL ITM si S>K."
+        else:
+            text=f"PUT strike {k}, subyacente {s}. ¿Está ITM?"
+            ok = "Sí" if s<k else "No"
+            expl="PUT ITM si S<K."
+        choices=[ok,"Depende del broker","Solo si hay dividendos","Siempre sí"]
         out.append(shuffle_choices(Question("Derivados y Riesgos", text, choices, 0, expl)))
     return out
 
-def gen_analisis(n=30):
+def gen_analisis(n=60):
     out=[]
     for _ in range(n):
-        text="En análisis técnico, una tendencia alcista suele caracterizarse por:"
-        choices=["Máximos y mínimos crecientes","Máximos y mínimos decrecientes","Precios constantes","Volatilidad cero"]
+        text="En análisis técnico, tendencia alcista suele ser:"
+        choices=["Máximos y mínimos crecientes","Máximos y mínimos decrecientes","Precio fijo","Volatilidad cero"]
         expl="Tendencia alcista: higher highs & higher lows."
         out.append(shuffle_choices(Question("Análisis Económico/Financiero/Técnico", text, choices, 0, expl)))
     return out
