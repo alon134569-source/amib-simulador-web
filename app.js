@@ -36,7 +36,7 @@ async function loadPy() {
   el("loaderStatus").textContent = "Inicializando banco de preguntas…";
 
   const areas = pyodide.runPython("init_bank()");
-  const jsAreas = areas.toJs();
+  const jsAreas = areas.toJs(); // esto está OK porque es lista, no dict
 
   // Cargar temas
   const topicSel = el("topic");
@@ -90,7 +90,8 @@ async function start(mode, topic) {
   setHidden("results", true);
   setHidden("quiz", false);
 
-  const q = pyodide.runPython(`get_question(${currentIndex})`).toJs();
+  const q = pyodide.runPython(`get_question(${currentIndex})`)
+  .toJs({ dict_converter: Object.fromEntries });
   renderQuestion(q);
 }
 
@@ -109,7 +110,8 @@ async function next(saveAsSkip=false) {
     return;
   }
 
-  const q = pyodide.runPython(`get_question(${currentIndex})`).toJs();
+  const q = pyodide.runPython(`get_question(${currentIndex})`)
+  .toJs({ dict_converter: Object.fromEntries });
   renderQuestion(q);
 }
 
@@ -163,7 +165,8 @@ function renderResults(summary) {
 }
 
 async function finish() {
-  const summary = pyodide.runPython("finish()").toJs();
+  const summary = pyodide.runPython("finish()")
+  .toJs({ dict_converter: Object.fromEntries });
 
   setHidden("quiz", true);
   setHidden("results", false);
